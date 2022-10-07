@@ -12,3 +12,9 @@ git clone https://github.com/RektPunk/wandb-tutorial.git
 ```
 pip install -r requirements.txt
 ```
+
+3. Create file named `.env` and add wandb api token.
+
+```python
+WANDB_API_TOKEN = "***"
+```
