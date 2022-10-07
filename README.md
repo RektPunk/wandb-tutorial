@@ -1,6 +1,6 @@
 # wandb-tutorial
 
-A small tutorial for weight and bias (wandb)
+A small tutorial for Weights & Biases (wandb)
 
 ### Getting Started
 1. Clone the repo
