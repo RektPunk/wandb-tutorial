@@ -109,6 +109,15 @@ class WandbExperimentManager(WandbToken):
         """
         self.wandb_run.finish()
 
+    def __del__(self) -> None:
+        """
+        Destructor
+        """
+        try:
+            self.wandb_run.finish()
+        except:
+            pass
+
     @property
     def run_infos(self):
         """
