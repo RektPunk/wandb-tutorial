@@ -137,7 +137,6 @@ class WandbExperimentManager(WandbToken):
             title (str): alert title
             text (str): alert text
             level (str): alert level
-
         """
         _level = level.upper()
         if _level in AlertLevel._member_names_:
