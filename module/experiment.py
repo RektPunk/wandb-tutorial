@@ -19,11 +19,11 @@ class WandbExperimentManager(WandbToken):
         log_config()
         log_summary()
         log()
+        log_artifact()
+        download_artifact()
         alert()
         finish()
-
-    Properties:
-        run_infos
+        get_infos()
     """
 
     def __init__(
@@ -51,7 +51,6 @@ class WandbExperimentManager(WandbToken):
             notes=notes,
             config=config,
         )
-        self._run_url = self.wandb_run.get_project_url()
         self._config = self.wandb_run.config
         self._summary = {}
 
@@ -81,15 +80,63 @@ class WandbExperimentManager(WandbToken):
         """
         self.wandb_run.log(metric)
 
+    def log_artifact(self, name: str, path: str, **kwargs) -> None:
+        """
+        Log artifact
+        Args:
+            name (str): artifact name
+            path (str): artifact path
+            **kwargs  : include type (str)
+        """
+        artifact = wandb.Artifact(name, **kwargs)
+        artifact.add_file(path)
+        self.wandb_run.log_artifact(artifact)
+
+    def download_artifact(self, name: str, version: str = "latest") -> str:
+        """
+        Download artifact
+        Args:
+            name (str): artifact name
+            version (str, optional): artifact version. Defaults to "latest".
+        Returns:
+            str: path of downloaded artifact
+        """
+        assert version[0] == "v" or version == "latest"
+        artifact = self.wandb_run.use_artifact(artifact_or_name=f"{name}:{version}")
+        artifact_dir = artifact.download()
+        return artifact_dir
+
+    def get_infos(self):
+        """
+        Get infos
+        Returns:
+            {
+                "project"    : ...,
+                "name"       : ...,
+                "project_url": ...,
+                "run_url"    : ...,
+                "config"     : ...,
+                "summary"    : ...,
+            }
+        """
+        return {
+            "project": self.wandb_run.project,
+            "name": self.wandb_run.name,
+            "project_url": self.wandb_run.get_project_url(),
+            "run_url": self.wandb_run.get_url(),
+            "config": self._config,
+            "summary": self._summary,
+        }
+
     def alert(
         self, title: str, text: str, level: str = AlertLevel.WARN.value, **kwargs
     ) -> None:
         """
         alert
         Args:
-            title (str)
-            text (str)
-            level (str)
+            title (str): alert title
+            text (str): alert text
+            level (str): alert level
 
         """
         _level = level.upper()
@@ -117,20 +164,3 @@ class WandbExperimentManager(WandbToken):
             self.wandb_run.finish()
         except:
             pass
-
-    @property
-    def run_infos(self):
-        """
-        Run infos
-        Returns:
-            {
-                "run_url": ...,
-                "config" : ...,
-                "summary": ...,
-            }
-        """
-        return {
-            "run_url": self._run_url,
-            "config": self._config,
-            "summary": self._summary,
-        }
