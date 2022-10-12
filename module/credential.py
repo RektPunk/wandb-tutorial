@@ -1,12 +1,11 @@
 import os
+from enum import Enum
 from dotenv import load_dotenv
 
 
-class WandbToken:
-    """
-    Set wandb token
-    """
+class Credential(str, Enum):
+    load_dotenv()
+    WANDB_API_TOKEN: str = os.environ["WANDB_API_TOKEN"]
 
-    def __init__(self):
-        load_dotenv()
-        self.wandb_api_token = os.environ["WANDB_API_TOKEN"]
+    def __repr__(self):
+        return f"{self.value}"
