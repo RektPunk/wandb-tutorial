@@ -1,6 +1,6 @@
 from module import WandbExperimentManager
 
-
+# init
 wandb_run_manager = WandbExperimentManager(
     project="my-test-project",
     name="test-code",
@@ -9,6 +9,7 @@ wandb_run_manager = WandbExperimentManager(
     config={"learning_rate": 0.001, "epochs": 1000, "batch_size": 128},
 )
 
+# log config
 wandb_run_manager.log_config(
     {
         "train/size": 1000,
@@ -16,6 +17,7 @@ wandb_run_manager.log_config(
     }
 )
 
+# log metrics
 for epoch in range(1000):
     wandb_run_manager.log(
         {
@@ -24,6 +26,7 @@ for epoch in range(1000):
         }
     )
 
+# log summary
 wandb_run_manager.log_summary(
     {
         "train/accuracy": 0.99,
@@ -31,12 +34,47 @@ wandb_run_manager.log_summary(
     }
 )
 
-print(wandb_run_manager.run_infos)
+# get info of run
+print(wandb_run_manager.get_infos())
 
+# alert
 wandb_run_manager.alert(
     title="alert test title",
     text="alert test text",
     level="ERROR",
 )
+
+# log artifact
+wandb_run_manager.log_artifact(
+    name="train",
+    path="artifacts/dataset.txt",
+    type="dataset",
+)
+
+wandb_run_manager.log_artifact(
+    name="baseline",
+    path="artifacts/model_v0.txt",
+    type="model",
+)
+
+wandb_run_manager.log_artifact(
+    name="baseline",
+    path="artifacts/model_v1.txt",
+    type="model",
+)
+
+
+# download artifact
+v0_artifact_path = wandb_run_manager.download_artifact(
+    name="baseline",
+    version="v0",
+)
+print(v0_artifact_path)
+
+latest_artifact_path = wandb_run_manager.download_artifact(
+    name="baseline",
+)
+print(latest_artifact_path)
+
 
 wandb_run_manager.finish()
