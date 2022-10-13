@@ -1,10 +1,10 @@
 import wandb
 from typing import Any, Optional, Union, List, Dict
-from module.credential import WandbToken
+from module.credential import Credential, login_check
 from wandb import AlertLevel
 
 
-class WandbExperimentManager(WandbToken):
+class WandbExperimentManager:
     """
     Wandb experiment manager\\
 
@@ -42,8 +42,8 @@ class WandbExperimentManager(WandbToken):
             tags (Optional[Union[str, List[str]]], optional)  Defaults to None.
             config (Optional[Dict[str, Any]], optional)  Defaults to None.
         """
-        super().__init__()
-        wandb.login(key=self.wandb_api_token)
+        self.wandb_api_token = Credential.WANDB_API_TOKEN
+        login_check(api_token=self.wandb_api_token)
         self.wandb_run = wandb.init(
             project=project,
             name=name,
